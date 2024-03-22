@@ -1,0 +1,29 @@
+﻿<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">Test Boarding App</h1>
+        <p class="lead">This is a webapp for a hypothetical "Pet Boarding" service</p>
+    </section>
+
+    <div class="row">
+        <section class="col-md-10" aria-labelledby="gettingStartedTitle">
+            <h2 id="descriptionTitle">About</h2>
+            <p>
+                This is a hypothetical "Pet Boarding" service webapp built using ASP.NET MVC during my internship with Web Surfing Studios. This webapp was built
+                with features such as creating and managing user accounts, managing pets, and managing bookings. Accounts, Pets, and Bookings are all stored on a SQL Server database.
+                Additionally, admin tools are available for managing user accounts, pets, and bookings.
+            </p>
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <p>Either create a new account or login to an existing account to get started.</p>
+                <p>Also check out my other projects!</p>
+                <p><a class="btn btn-outline-dark" href="https://github.com/ncanora"> GitHub &raquo;</a></p>
+            }
+            else
+            {
+                <p> You are logged! Get started by selecting "User Layout". Only adminstrators can access the admin layout. You can return to this page anytime by clicking the "Pet Boarding Service" title located in the top-left of the navigation bar.</p>
+                <p><a class="btn btn-outline-dark" href="@Url.Action("Index", "User")">Get Started &raquo;</a></p>
+            }
+        </section>
+        </div>
+    </main>

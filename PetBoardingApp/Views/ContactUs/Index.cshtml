@@ -1,0 +1,80 @@
+﻿@using PetBoardingApp.ViewModels
+@using PetBoardingApp.Views.ContactUs
+@using PetBoardingApp.Helpers
+
+
+@model ContactUsSubmissionVM
+@{
+    ViewBag.Title = "Contact Us";
+    if (User.Identity.IsAuthenticated)
+    {
+        Layout = "~/Views/Shared/_UserLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+<main aria-labelledby="title">
+    <h2 id="title">@ViewBag.Title</h2>
+
+    @using (Html.BeginForm("Index", "ContactUs", FormMethod.Post, new { role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        if (Model.Errors != null)
+        {
+            <p class="text-danger">@Model.Errors</p>
+            Model.Errors = null;
+        }
+        <h4>Send us a message!</h4>
+        <hr />
+        <div class="row">
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+            }
+            else
+            {
+                Model.Email = User.Identity.Name; // placeholder
+            }
+
+        </div>
+        <div class="row">
+            @Html.Label("FirstName", "First Name", new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.Label("LastName", "Last Name", new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(m => m.Message, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Message, 10, 40, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-centerr">
+                @Html.GoogleCaptcha()
+                @Html.InvalidGoogleCaptchaLabel("Captcha is not valid !")
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-md-2 col-md-10">
+                <input type="submit" value="Contact Us" class="btn btn-outline-dark" />
+            </div>
+        </div>
+    }
+</main>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

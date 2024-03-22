@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    if (User.Identity.IsAuthenticated)
+    {
+        Layout = "~/Views/Shared/_UserLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+<h1>My Account Page</h1>
+<h2>Index</h2>
+

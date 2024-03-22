@@ -1,0 +1,56 @@
+﻿@using PetBoardingApp.ViewModels
+@using PetBoardingApp.Views.ContactUs
+@model PetVM
+
+@{
+    ViewBag.Title = "Edit Pet";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h2>Register Your Pet</h2>
+
+@using (Html.BeginForm("Edit", "Pets", FormMethod.Post, new { role = "form" }))
+{
+
+<main>
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <hr />
+    <div class="row">
+        @Html.Label("Name", "Name*", new { @class = "col-md-2 col-form-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row">
+        @Html.Label("Breed", "Breed*", new { @class = "col-md-2 col-form-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Breed, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Breed, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row">
+        @Html.Label("Age", "Age", new { @class = "col-md-2 col-form-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Age, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Age, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(m => m.Notes, new { @class = "col-md-2 col-form-label" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(m => m.Notes, 20, 10, new { @class = "form-control", placeholder = "Anything we should know about your pet (behaviors, allergies, etc)?" })
+            @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="offset-md-2 col-md-10">
+            <input type="submit" value="Save Changes" class="btn btn-outline-dark" />
+        </div>
+    </div>
+</main>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

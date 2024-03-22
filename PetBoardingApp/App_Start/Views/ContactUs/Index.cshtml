@@ -1,0 +1,53 @@
+﻿@using PetBoardingApp.ViewModels
+@using PetBoardingApp.Views.ContactUs
+@model ContactUsSubmissionVM
+@{
+    ViewBag.Title = "Contact Us";
+}
+<main aria-labelledby="title">
+    <h2 id="title">@ViewBag.Title</h2>
+
+    @using (Html.BeginForm("Index", "ContactUs", FormMethod.Post, new { role = "form" }))
+    {
+        if(Model.Errors != null)
+                {
+                    <p class="text-danger">@Model.Errors</p>
+            Model.Errors = null;
+        }
+        <h4>Send us a message!</h4>
+        <hr />
+        <div class="row">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.Label("FirstName", "First Name", new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.Label("LastName", "Last Name", new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(m => m.Message, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Message, 10, 40, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-md-2 col-md-10">
+                <input type="submit" value="Contact Us" class="btn btn-outline-dark" />
+            </div>
+        </div>
+    }
+</main>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,208 @@
+﻿
+@{
+    ViewBag.Title = "My Pets";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+@model PetBoardingApp.ViewModels.BookingIndexVM
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.AntiForgeryToken()
+<h2>About</h2>
+<body>
+    <p>
+        This is the Bookings page of the webapp. This page is where users can manage their Bookings. Users can add, edit, and delete appointments from this page. Bookings are stored in a SQL Server database. Users cannot create overlapping or same-day bookings.
+    </p>
+    <h2>My Bookings</h2>
+    <div class="container">
+        <div class="row">
+            @if (Model.Bookings == null || Model.Bookings.Count == 0)
+            {
+                <p>You have no bookings. Make an appointment here:</p>
+
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#bookingModal">Make an Appointment</button>
+                </div>
+            }
+            else
+            {
+                for (var i = 0; i <= Model.Bookings.Count; i++)
+                {
+                    if (i < Model.Bookings.Count)
+                    {
+                        var booking = Model.Bookings[i];
+                        <div class="col-md-3 mb-3">
+                            <div class="card square-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">@booking.Pet.Name</h5>
+                                    <p class="card-text">@booking.Pet.Breed</p>
+                                    @if (booking.Pet.Age != null)
+                                    {
+                                        <p class="card-text">@booking.Pet.Age</p>
+                                    }
+                                    @if (booking.Notes != null)
+                                    {
+                                        <p class="card-text three-lines">@booking.Notes</p>
+                                        <style>
+                                            .three-lines {
+                                                display: -webkit-box;
+                                                -webkit-line-clamp: 3;
+                                                -webkit-box-orient: vertical;
+                                                overflow: hidden;
+                                                text-overflow: ellipsis;
+                                            }
+                                        </style>
+                                    }
+                                    @if (booking.BookingEndTime.Date == booking.BookingStartTime.Date)
+                                    {
+                                        <p class="card-text" style="line-height: .5;"><small class="text-muted">@booking.BookingStartTime.ToShortDateString()</small></p>
+                                    }
+                                    else
+                                    {
+                                        <p class="card-text" style="line-height: .5;"><small class="text-muted">From @booking.BookingStartTime.ToShortDateString() to @booking.BookingEndTime.ToShortDateString()</small></p>
+                                    }
+                                    <p class="card-text" style="line-height: .5;"><small class="text-muted">@booking.BookingStartTime.ToShortTimeString() to @booking.BookingEndTime.ToShortTimeString()</small></p>
+                                </div>
+                                <div class="modal-footer">
+
+                                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#deleteConfirmationModal" style="margin: 10px">Cancel</button>
+                                    <!-- Confirm Delete Pet Modal -->
+                                    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Cancellation</h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to cancel this appointment for @booking.Pet.Name? This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin: 10px;">Cancel</button>
+                                                    @using (Html.BeginForm("Remove", "Bookings", new { id = booking.BookingID }, FormMethod.Post, new { @class = "d-inline" }))
+                                                    {
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="submit" value="Confirm" class="btn btn-danger" style="margin: 10px;">
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-custom btn-lg btn-block square-button" data-toggle="modal" data-target="#bookingModal">
+                                <span style="font-size: 3.5em; font-weight:bold;">+</span>
+                            </button>
+                            <style>
+                                .square-card {
+                                    width: 300px;
+                                    height: 300px;
+                                }
+
+                                .btn-custom {
+                                    width: 300px;
+                                    height: 300px;
+                                    padding: 0;
+                                    font-size: 4em;
+                                    line-height: 100px;
+                                    text-align: center;
+                                    color: white;
+                                    background-color: lightgray;
+                                    border: .5px medium black;
+                                }
+
+                                    .btn-custom:hover {
+                                        background-color: darkgray;
+                                        color: white;
+                                    }
+                            </style>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+</body>
+<hr style="border-top: 1px solid black;">
+<!--Modal for appointment form-->
+<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingModalLabel">New Booking</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Add", "Bookings", FormMethod.Post, new { id = "bookingForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    
+                <div class="form-group row" style="margin-bottom: 20px">
+                    <label class="col-sm-2 col-form-label">@Html.Label("PetID", "Pet")</label>
+                    <div class="col-sm-10">
+                        @Html.DropDownListFor(model => model.BookingVM.PetID, new SelectList(Model.Pets, "PetID", "Name"), "Select a Pet", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.BookingVM.PetID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                    <div class="form-group row">
+                        @Html.Label("StartDate", "From:", new { @class = "col-sm-2 col-form-label" })
+                        <div class="col-sm-4">
+                            @Html.TextBoxFor(model => model.BookingVM.StartDate, new { @class = "form-control", placeholder = "MM/DD/YYYY" })
+                            @Html.ValidationMessageFor(model => model.BookingVM.StartDate, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-6">
+                            @Html.DropDownListFor(model => model.BookingVM.StartTime, (IEnumerable<SelectListItem>)Model.TimesList, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.Label("EndDate", "To:", new { @class = "col-sm-2 col-form-label" })
+                        <div class="col-sm-4">
+                            @Html.TextBoxFor(model => model.BookingVM.EndDate, new { @class = "form-control", placeholder = "MM/DD/YYYY" })
+                            @Html.ValidationMessageFor(model => model.BookingVM.EndDate, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-sm-6">
+                            @Html.DropDownListFor(model => model.BookingVM.EndTime, ((IEnumerable<SelectListItem>)Model.TimesList), "Select a Time", new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 20px">
+                        @Html.LabelFor(model => model.BookingVM.Notes, new { @class = "col-md-2 col-form-label" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.BookingVM.Notes, 5, 5, new { @class = "form-control", placeholder = "Anything we should know about your appointment (someone else is dropping off/picking up, etc)?" })
+                            @Html.ValidationMessageFor(model => model.BookingVM.Notes, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                            if (ViewBag.ErrorMessage != null)
+                            {
+                            <div class="alert alert-warning">@ViewBag.ErrorMessage</div>
+                            }
+                    <div class="text-center">
+                        <button type="Submit" class="btn btn-primary" style="margin:20px 0;">Book Appointment</button>
+                     </div>
+                 }
+                <div class="modal-footer">
+                </div>
+            </div>
+                    </div>
+                </div>
+</div>
+
+<!--If submission error for add booking, modal will be open-->
+<script>
+    $(document).ready(function () {
+        var showModal = '@ViewBag.ShowModal';
+        if (showModal === 'True') {
+            $('#bookingModal').modal('show');
+        }
+    });
+
+    $(document).ready(function () {
+        $('.close').click(function () {
+            $('#bookingModal').modal('hide');
+        });
+    });
+</script>

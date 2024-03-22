@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Successfully added Pet!";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Successfully added Pet!</title>
+    <script type="text/javascript">
+        setTimeout(function(){
+            window.location.href = '@Url.Action("Index", "Pets")';
+        }, 3000);
+    </script>
+</head>
+<body>
+    <p>You have successfully registered your pet! Now redirecting to home...</p>
+</body>
+</html>
